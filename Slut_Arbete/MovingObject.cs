@@ -16,6 +16,7 @@ namespace Slut_Arbete
         {
             speed.X = speedX;
             speed.Y = speedY;
+
         }
     }
 }

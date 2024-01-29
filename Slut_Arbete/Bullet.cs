@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +10,17 @@ namespace Slut_Arbete
 {
     class Bullet : PhysicalObject
     {
-        public Bullet(Texture2D texture, float x, float y) : base(texture, x, y, 0, 3f)
-        {
+        Vector2 direction;
 
+        public Bullet(Texture2D texture, float x, float y, Vector2 direction) : base(texture, x, y, 15f, 15f)
+        {
+            this.direction = direction;
         }
+
         public void Update()
         {
-            
-            
-            vector.Y -= speed.Y;
 
-
-            if (vector.Y < 0)
-            {
-                isAlive = false;
-            }
+            vector += speed * direction;
         }
     }
 }

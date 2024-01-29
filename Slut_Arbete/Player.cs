@@ -13,9 +13,11 @@ namespace Slut_Arbete
 {
     internal class Player : PhysicalObject
     {
+        int points = 0;
         List<Bullet> bullets;
         Texture2D bulletTexture;
         double timeSinceLastBullet = 0;
+
         
         public Player(Texture2D texture, float X, float Y, float speedX, float speedY, Texture2D bulletTexture) : base(texture, X, Y, speedX, speedY)
         {
@@ -44,10 +46,24 @@ namespace Slut_Arbete
 
         }
 
+        public void Reset(float X, float Y, float speedX, float speedY)
+        {
+            vector.X = X;
+            vector.Y = Y;
+            speed.X = speedX;
+            speed.Y = speedY;
+            bullets.Clear();
+            timeSinceLastBullet = 0;
+            points = 0;
+            isAlive = true;
+        }
         public void Update(GameWindow window, GameTime gameTime)
         {
             KeyboardState keyboardState = Keyboard.GetState();
-            if (keyboardState.IsKeyDown(Keys.Space))
+            
+            MouseState mouse = Mouse.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.Escape))
             {
                 isAlive = false;
             }
@@ -85,14 +101,19 @@ namespace Slut_Arbete
             {
                 vector.Y = window.ClientBounds.Height - texture.Height;
             }
+
             if (keyboardState.IsKeyDown(Keys.Space))
             {
                 if (gameTime.TotalGameTime.TotalMilliseconds > timeSinceLastBullet + 200)
                 {
-                    Bullet temp = new Bullet(bulletTexture, vector.X + 100, vector.Y);
+                    Vector2 mousePosition = new Vector2(mouse.X, mouse.Y);
+                    Vector2 directionToMouse = Vector2.Normalize(mousePosition - new Vector2(vector.X, vector.Y));
+
+                    Bullet temp = new Bullet(bulletTexture, vector.X, vector.Y, directionToMouse);
                     bullets.Add(temp);
                     timeSinceLastBullet = gameTime.TotalGameTime.TotalMilliseconds;
                 }
+
             }
             foreach (Bullet b in bullets.ToList())
             {
@@ -106,6 +127,10 @@ namespace Slut_Arbete
 
 
         }
-        
+        public int Points
+        {
+            get { return points; }
+            set { points = value; }
+        }
     }
 }

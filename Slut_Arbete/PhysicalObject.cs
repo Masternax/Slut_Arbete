@@ -11,7 +11,7 @@ namespace Slut_Arbete
     internal class PhysicalObject : MovingObject
     {
         protected bool isAlive = true;
-
+        
         public PhysicalObject(Texture2D texture, float X, float Y, float speedX, float speedY) : base(texture, X, Y, speedX, speedY)
         {
         }
@@ -27,5 +27,7 @@ namespace Slut_Arbete
             get { return isAlive; }
             set { isAlive = value; }
         }
+
+        
     }
 }
