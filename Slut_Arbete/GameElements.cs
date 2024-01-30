@@ -9,13 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpaceShooter3;
 using SpaceShooter2;
+using System.Reflection.Metadata;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Slut_Arbete
 {
     internal class GameElements
     {
-        //static List<GoldCoin> goldCoins;
-        //static Texture2D goldCoinSprite;
+        
         static public int tPoints;
         static Player player;
         static Background background;
@@ -24,16 +25,16 @@ namespace Slut_Arbete
         static Menu menu;
         
 
-        public enum State { Menu, Run, PrintHighScore, EnterHighScore, Quit };
+        public enum State { Menu, Run, HowToPlay, PrintHighScore, EnterHighScore, Quit };
         public static State currentState;
         public static void Initialize()
         {
-            //goldCoins = new List<GoldCoin>();
+            
         }
         public static void LoadContent(ContentManager content, GameWindow window)
         {
             player = new Player(content.Load<Texture2D>("images/player/player1"), 960, 540, 4.5f, 4.5f, content.Load<Texture2D>("images/player/bullet"));
-            //goldCoinSprite = content.Load<Texture2D>("images/powerups/coin");
+            
             enemies = new List<Enemy>();
             Random random = new Random();
             Texture2D tmpsprite = content.Load<Texture2D>("images/enemies/mine");
@@ -56,6 +57,14 @@ namespace Slut_Arbete
                 Tripod temp = new Tripod(tmpsprite, rndX, rndY);
                 enemies.Add(temp);
             }
+            tmpsprite = content.Load<Texture2D>("images/enemies/ship");
+            for (int i = 0; i < 5; i++)
+            {
+                int rndX = random.Next(0, window.ClientBounds.Width - tmpsprite.Width);
+                int rndY = 0;
+                NyEnemy temp = new NyEnemy(tmpsprite, rndX, rndY);
+                enemies.Add(temp);
+            }
 
             printText = new PrintText(content.Load<SpriteFont>("myFont4"));
             currentState = State.Menu;
@@ -63,6 +72,7 @@ namespace Slut_Arbete
             menu = new Menu((int)State.Menu);
             menu.addItem(content.Load<Texture2D>("images/menu/start"), (int)State.Run);
             menu.addItem(content.Load<Texture2D>("images/menu/highscore"), (int)State.PrintHighScore);
+            menu.addItem(content.Load<Texture2D>("images/menu/HowToPlay2"), (int)State.HowToPlay);
             menu.addItem(content.Load<Texture2D>("images/menu/exit"), (int)State.Quit);
         }
 
@@ -89,6 +99,15 @@ namespace Slut_Arbete
                 Tripod temp = new Tripod(tmpsprite, rndX, rndY);
                 enemies.Add(temp);
             }
+            tmpsprite = content.Load<Texture2D>("images/enemies/ship");
+            for (int i = 0; i < 5; i++)
+            {
+                int rndX = random.Next(0, window.ClientBounds.Width - tmpsprite.Width);
+                int rndY = 0;
+                NyEnemy temp = new NyEnemy(tmpsprite, rndX, rndY);
+                enemies.Add(temp);
+            }
+
         }
 
         public static State MenuUpdate(GameTime gameTime)
@@ -100,9 +119,27 @@ namespace Slut_Arbete
             background.Draw(spriteBatch);
             menu.Draw(spriteBatch);
         }
+
+        public static State HowToPlayUpdate()
+        {
+            KeyboardState keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Escape))
+            {
+                return State.Menu;
+            }
+            return State.HowToPlay;
+        }
+
+        public static void HowToPlayDraw(SpriteBatch spriteBatch)
+        {
+
+            printText.Print("How To Play:\n du ror dig med A W S D\n samt du skjuter med BLACKSPACE\n Du far poang genom att dod enemies", spriteBatch, 0, 0);
+
+        }
+
         public static State RunUpdate(ContentManager content, GameWindow window, GameTime gameTime)
         {
-            
+           
             player.Update(window, gameTime);
 
             foreach (Enemy e in enemies.ToList())
@@ -131,32 +168,7 @@ namespace Slut_Arbete
                 }
             }
 
-            //Random random = new Random();
-            //int newCoin = random.Next(1, 200);
-            //if (newCoin == 1)
-            //{
-            //    int rndX = random.Next(0, window.ClientBounds.Width - goldCoinSprite.Width);
-            //    int rndY = random.Next(0, window.ClientBounds.Height - goldCoinSprite.Height);
-            //    goldCoins.Add(new GoldCoin(goldCoinSprite, rndX, rndY, gameTime));
-            //}
-
-            //foreach (GoldCoin gc in goldCoins.ToList())
-            //{
-            //    if (gc.IsAlive)
-            //    {
-            //        gc.Update(gameTime);
-
-            //        if (gc.CheckCollision(player))
-            //        {
-            //            goldCoins.Remove(gc);
-            //            player.Points++;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        goldCoins.Remove(gc);
-            //    }
-            //}
+            
 
             background.Update(window);
 
@@ -173,6 +185,19 @@ namespace Slut_Arbete
             }
             return State.Run;
 
+
+        }
+
+        public static void RunDraw(SpriteBatch spriteBatch)
+        {
+            background.Draw(spriteBatch);
+            player.Draw(spriteBatch, Mouse.GetState());
+            foreach (Enemy e in enemies)
+            {
+                e.Draw(spriteBatch);
+            }
+            
+            printText.Print("points:" + player.Points, spriteBatch, 0, 0);
 
         }
 
@@ -212,25 +237,16 @@ namespace Slut_Arbete
                 Tripod temp = new Tripod(tmpsprite, rndX, rndY);
                 enemies.Add(temp);
             }
-        }
-
-        public static void RunDraw(SpriteBatch spriteBatch)
-        {
-            background.Draw(spriteBatch);
-            player.Draw(spriteBatch, Mouse.GetState());
-            foreach (Enemy e in enemies)
+            tmpsprite = content.Load<Texture2D>("images/enemies/ship");
+            for (int i = 0; i < 5; i++)
             {
-                e.Draw(spriteBatch);
+                int rndX = random.Next(0, window.ClientBounds.Width - tmpsprite.Width);
+                int rndY = 0;
+                NyEnemy temp = new NyEnemy(tmpsprite, rndX, rndY);
+                enemies.Add(temp);
             }
-            //foreach (GoldCoin gc in goldCoins)
-            //{
-            //    gc.Draw(spriteBatch);
-            //}
-            printText.Print("points:" + player.Points, spriteBatch, 0, 0);
-
-            
-
-
         }
+
+        
     }
 }

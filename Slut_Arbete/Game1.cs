@@ -71,6 +71,12 @@ namespace Slut_Arbete
                         currentState = State.Menu;
                     }
                     break;
+
+                case GameElements.State.HowToPlay:
+                    GameElements.currentState = GameElements.HowToPlayUpdate();
+                    break;
+
+
                 case GameElements.State.Quit:
                     this.Exit();
                     break;
@@ -101,6 +107,10 @@ namespace Slut_Arbete
 
                 case GameElements.State.PrintHighScore:
                     highscore.PrintDraw(spriteBatch, myFont4);
+                    break;
+
+                case GameElements.State.HowToPlay:
+                    GameElements.HowToPlayDraw(spriteBatch);
                     break;
 
                 case GameElements.State.Quit:
